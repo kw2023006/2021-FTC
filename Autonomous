@@ -100,9 +100,6 @@ public class gyrostraightnstrafe extends LinearOpMode {
     private DcMotor feedermotor = null;
     private DcMotorEx shootermotor = null;
 
-    DistanceSensor distanceSensor;
-    DistanceSensor distanceSensor2;
-
     public static  double     P_DRIVE_COEFF = 0.00202674492; // kp=1/(704.86*constant) = constant = 0.7; //0.04
     //larger is more responsive but less stable
 
@@ -117,8 +114,6 @@ public class gyrostraightnstrafe extends LinearOpMode {
 
         // get a reference to our ColorSensor object.
 
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor_range");
-        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -158,93 +153,6 @@ public class gyrostraightnstrafe extends LinearOpMode {
 
         gyroDrive(0.3,45,0);
         stopMotors();
-
-
-        if (distanceSensor.getDistance(DistanceUnit.INCH) < 20){ //detects rings on the bottom
-            if (distanceSensor2.getDistance(DistanceUnit.INCH) < 20){ //detects ring on top, so whether or not 4 rings
-                telemetry.addLine("cccccccc");
-                telemetry.update();
-                autonomousC();
-
-            } else if (distanceSensor2.getDistance(DistanceUnit.INCH) > 20){
-               // gyroStrafe(0.3,10,0);
-                stopMotors();
-            }
-        } else {
-            //gyroDrive(0.3,-30,0);
-            stopMotors();
-        }
-
-    }
-    public void autonomousC(){
-
-        while (runtime.seconds() < 1) {
-            armmotor.setPower(0.35);
-        }
-        armmotor.setPower(0);
-
-        //resetEncoders();
-        gyroDrive(0.3, 68, 0);
-        //resetEncoders();
-        // the distance is -ve because the target = current position +/- distance
-        gyroStrafe(0.3, -29, 0);
-
-        while (runtime.seconds() < 3) {
-            stopMotors();
-        }
-
-        //sets down the wobble goal
-        /*runtime.reset();
-        while (runtime.seconds() < 0.5) {
-            armmotor.setPower(-0.8);
-        }
-        armmotor.setPower(0);
-         */
-
-       // resetEncoders();
-        gyroStrafe(0.3, 19, 0);
-        //resetEncoders();
-        gyroDrive(0.3, -46, 0);
-
-        stopMotors();
-        while(runtime.seconds()<3){
-            shootermotor.setVelocity(-2000);
-            feedermotor.setPower(0);
-        }
-        while(runtime.seconds() < 1.5){
-            shootermotor.setVelocity(-2000);
-            feedermotor.setPower(-0.7);
-        }
-        runtime.reset();
-        while(runtime.seconds()<2){
-            shootermotor.setVelocity(-2000);
-            feedermotor.setPower(0);
-        }
-        runtime.reset();
-        while(runtime.seconds() < 1.5){
-            shootermotor.setVelocity(-2000);
-            feedermotor.setPower(-0.7);
-        }
-        runtime.reset();
-        while(runtime.seconds()<2){
-            shootermotor.setVelocity(-2000);
-            feedermotor.setPower(0);
-        }  runtime.reset();
-        while(runtime.seconds() < 1.5){
-            shootermotor.setVelocity(-2000);
-            feedermotor.setPower(-0.7);
-        }
-        runtime.reset();
-        while(runtime.seconds()<2){
-            shootermotor.setVelocity(-2000);
-            feedermotor.setPower(0);
-        }
-
-        //turning and lining up to intake 3 more rings
-        gyroTurn(0.3,180);
-        resetGyro();
-        gyroDrive(0.3, 10, 0);
-
 
     }
     public void gyroTurn(double speed, double angle) {
